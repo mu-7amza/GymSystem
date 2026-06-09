@@ -11,6 +11,7 @@ namespace GymSystem.BLL.Service.Interface
     public interface IMemberService
     {
         Task<IEnumerable<MemberViewModel>> GetAllMemberAsync(bool tracking ,CancellationToken ct = default);
+        Task<MemberDetailsViewModel> GetMemberDetailsByIdAsync(int id, CancellationToken ct);
         Task<bool> CreateMemberAsync(CreateMemberViewModel model, CancellationToken ct = default);
     }
 }

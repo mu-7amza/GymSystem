@@ -38,6 +38,12 @@ namespace GymSystem.DAL.Repositories.Classes
             return await _context.SaveChangesAsync(ct);
         }
 
+        public async Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false, CancellationToken ct = default)
+        {
+            var query = tracking ? _dbSet : _dbSet.AsNoTracking();
+            return await query.FirstOrDefaultAsync(predicate, ct);
+        }
+
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = false, CancellationToken ct = default)
         {
             IQueryable<TEntity> query = tracking ? _dbSet : _dbSet.AsNoTracking();

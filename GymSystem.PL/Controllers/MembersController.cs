@@ -50,5 +50,17 @@ namespace GymSystem.PL.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> MemberDetails(int id,CancellationToken ct)
+        {
+            // Get Member By Id
+            var member = await _memberService.GetMemberDetailsByIdAsync(id, ct);
+            if(member is null)
+            {
+                TempData["Error"] = "Member Not Found";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(member);
+        }
     }
 }
