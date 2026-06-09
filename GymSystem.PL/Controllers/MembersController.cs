@@ -34,12 +34,21 @@ namespace GymSystem.PL.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMember(CreateMemberViewModel model)
         {
-            if (!ModelState.IsValid) return View(nameof(Create), model);     
+            if (!ModelState.IsValid) 
+                return View(nameof(Create), model);
 
             var result = await _memberService.CreateMemberAsync(model);
+
+            if (result)
+            {
+                TempData["Success"] = "Member Created Succcesfully";
+            }
+            else
+            {
+                TempData["Error"] = "Failed to Create Member";
+            }
+
             return RedirectToAction(nameof(Index));
-            
-           
         }
     }
 }
