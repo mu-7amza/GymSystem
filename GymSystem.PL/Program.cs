@@ -17,6 +17,7 @@ option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection
 // Register Repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IPlanService, PlanService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build(); 

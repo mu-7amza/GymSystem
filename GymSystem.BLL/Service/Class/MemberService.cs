@@ -65,7 +65,7 @@ namespace GymSystem.BLL.Service.Class
             var member = await _unitOfWork.GetRepository<Member>().GetByIdAsync(id,ct);
             if (member == null) return false;
 
-            var hasFuturebooking = await _unitOfWork.GetRepository<Booking>().AnyAsync(x => x.Id == member.Id && x.Session.StartDate > DateTime.Now,ct);
+            var hasFuturebooking = await _unitOfWork.GetRepository<Booking>().AnyAsync(x => x.MemberId == member.Id && x.Session.StartDate > DateTime.Now,ct);
 
             if (hasFuturebooking) return false;
 
@@ -160,10 +160,10 @@ namespace GymSystem.BLL.Service.Class
             if (member == null) return false;
 
             // Check Email Exists
-            var emailExist = await _unitOfWork.GetRepository<Member>().AnyAsync(x => x.Email == member.Email && x.Id != id, ct);
+            var emailExist = await _unitOfWork.GetRepository<Member>().AnyAsync(x => x.Email == model.Email && x.Id != id, ct);
 
             // Check Phone Exists
-            var phoneExist = await _unitOfWork.GetRepository<Member>().AnyAsync(x => x.Phone == member.Phone && x.Id != id, ct);
+            var phoneExist = await _unitOfWork.GetRepository<Member>().AnyAsync(x => x.Phone == model.Phone && x.Id != id, ct);
 
             if (emailExist || phoneExist) return false;
 

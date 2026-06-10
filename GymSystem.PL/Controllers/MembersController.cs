@@ -63,15 +63,16 @@ namespace GymSystem.PL.Controllers
             return View(member);
         }
 
-        public async Task<IActionResult> HealthRecordDetails(int memberID, CancellationToken ct)
+        public async Task<IActionResult> HealthRecordDetails(int id, CancellationToken ct)
         {
             // Get HealthRecord By MemberId
-            var healthRecord = await _memberService.GetHealthRecordDetails(memberID, ct);
+            var healthRecord = await _memberService.GetHealthRecordDetails(id, ct);
             if (healthRecord is null)
             {
                 TempData["Error"] = "Health Record Not Found";
                 return RedirectToAction(nameof(Index));
             }
+
             return View(healthRecord);
         }
 
@@ -79,13 +80,23 @@ namespace GymSystem.PL.Controllers
         public async Task<IActionResult> EditMember(int id , CancellationToken ct)
         {
             // Get Member By Id
-            var member = await _memberService.GetMemberDetailsByIdAsync(id, ct);
+            var member = await _memberService.GetMemberToUpdate(id, ct);
             if (member is null)
             {
                 TempData["Error"] = "Member Not Found";
                 return RedirectToAction(nameof(Index));
             }
-            return View(member);
+            var memberViewModel = new MemberToUpdateViewModel
+            {
+                Name = member.Name,
+                Phone = member.Phone,
+                Email = member.Email,
+                Photo = member.Photo,
+                BuildingNumber = member.BuildingNumber,
+                City = member.City,
+                Street = member.Street
+            };
+            return View(memberViewModel);
         }
 
         [HttpPost]
@@ -108,10 +119,10 @@ namespace GymSystem.PL.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DeleteMember(int Id, CancellationToken ct)
+        public async Task<IActionResult> DeleteMember(int id, CancellationToken ct)
         {
             // Get Member By Id
-            var member = await _memberService.GetMemberDetailsByIdAsync(Id, ct);
+            var member = await _memberService.GetMemberDetailsByIdAsync(id, ct);
             if (member is null)
             {
                 TempData["Error"] = "Member Not Found";
