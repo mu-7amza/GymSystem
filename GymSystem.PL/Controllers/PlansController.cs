@@ -10,7 +10,7 @@ namespace GymManagementSystem.Controllers
 {
     public class PlansController : Controller
     {
-        private readonly IPlanService _planService ;
+        private readonly IPlanService _planService;
         public PlansController(IPlanService planService)
         {
             _planService = planService;
