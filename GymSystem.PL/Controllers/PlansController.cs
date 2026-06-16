@@ -10,7 +10,7 @@ namespace GymManagementSystem.Controllers
 {
     public class PlansController : Controller
     {
-        private readonly IPlanService _planService;
+        private readonly IPlanService _planService ;
         public PlansController(IPlanService planService)
         {
             _planService = planService;
@@ -27,7 +27,7 @@ namespace GymManagementSystem.Controllers
         // Get BaseUrl/Plans/Details/id
         public async Task<IActionResult> Details(int id, CancellationToken ct)
         {
-           var plan = await _planService.GetPlanDetailsByIdAsync(id, ct);
+            var plan = await _planService.GetPlanDetailsByIdAsync(id, ct);
             if (plan is null)
             {
                 TempData["Error"] = "Plan Not Found";

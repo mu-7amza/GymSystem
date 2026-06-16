@@ -1,3 +1,4 @@
+using GymSystem.BLL;
 using GymSystem.BLL.Service.Class;
 using GymSystem.BLL.Service.Interface;
 using GymSystem.DAL.Data.DbContexts;
@@ -19,6 +20,11 @@ builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IPlanService, PlanService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ITrainerService, TrainerService>();
+
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
 
 var app = builder.Build(); 
 

@@ -86,17 +86,7 @@ namespace GymSystem.PL.Controllers
                 TempData["Error"] = "Member Not Found";
                 return RedirectToAction(nameof(Index));
             }
-            var memberViewModel = new MemberToUpdateViewModel
-            {
-                Name = member.Name,
-                Phone = member.Phone,
-                Email = member.Email,
-                Photo = member.Photo,
-                BuildingNumber = member.BuildingNumber,
-                City = member.City,
-                Street = member.Street
-            };
-            return View(memberViewModel);
+            return View(member);
         }
 
         [HttpPost]

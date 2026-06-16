@@ -14,7 +14,5 @@ namespace GymSystem.BLL.ViewModels.MemberViewModel
         public string Email { get; set; } 
         public string Phone { get; set; } 
         public string Gender { get; set; }
-
-
     }
 }

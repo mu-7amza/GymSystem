@@ -16,7 +16,6 @@ namespace GymSystem.BLL.ViewModels.MemberViewModel
         public string? DateOfBirth { get; set; }
 
         public string? Address { get; set; }
-
         public string? PlanName { get; set; }
         public string? MembershipStartDate { get; set; }
         public string? MembershipEndDate { get; set; }

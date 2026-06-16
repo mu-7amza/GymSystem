@@ -1,4 +1,5 @@
-﻿using GymSystem.BLL.Service.Interface;
+﻿using AutoMapper;
+using GymSystem.BLL.Service.Interface;
 using GymSystem.BLL.ViewModels.PlanViewModel;
 using GymSystem.DAL.Data.Models;
 using GymSystem.DAL.Repositories.Interfaces;
@@ -14,10 +15,12 @@ namespace GymSystem.BLL.Service.Class
     public class PlanService : IPlanService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public PlanService(IUnitOfWork unitOfWork)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<PlanViewModel>> GetAllPlansAsync(bool tracking, CancellationToken ct = default)
@@ -25,15 +28,7 @@ namespace GymSystem.BLL.Service.Class
             var plans = await _unitOfWork.GetRepository<Plan>().GetAllAsync(false, ct);
             if (!plans.Any()) return [];
 
-            return plans.Select(p => new PlanViewModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                DurationDays = p.DurationDays,
-                Price = p.Price,
-                IsActive = p.IsActive
-            }).ToList();
+            return _mapper.Map<IEnumerable<PlanViewModel>>(plans);
 
         }
 
@@ -41,30 +36,14 @@ namespace GymSystem.BLL.Service.Class
         {
             var plan = await _unitOfWork.GetRepository<Plan>().GetByIdAsync(id, ct);
             if (plan == null) return null;
-            var planViewModel = new PlanViewModel
-            {
-                Id = plan.Id,
-                Name = plan.Name,
-                Description = plan.Description,
-                DurationDays = plan.DurationDays,
-                Price = plan.Price,
-                IsActive = plan.IsActive
-            };
-            return planViewModel;
+            return _mapper.Map<PlanViewModel>(plan);
         }
 
         public async Task<PlanToUpdateViewModel?> GetPlanToUpdate(int id, CancellationToken ct = default)
         {
             var plan = await _unitOfWork.GetRepository<Plan>().GetByIdAsync(id, ct);
             if(plan == null) return null;
-            return new PlanToUpdateViewModel
-            {
-                Name = plan.Name,
-                Description = plan.Description,
-                DurationDays = plan.DurationDays,
-                Price = plan.Price,
-                IsActive = plan.IsActive
-            };
+            return _mapper.Map<PlanToUpdateViewModel>(plan);
         }
 
         public async Task<bool> UpdatePlanDetailsAsync(int id, PlanToUpdateViewModel model, CancellationToken ct = default)
@@ -77,13 +56,9 @@ namespace GymSystem.BLL.Service.Class
 
             if(planMemberShip is not null) return false;
 
-            plan.Name = model.Name;
-            plan.Price = model.Price;
-            plan.DurationDays = model.DurationDays;
-            plan.Description = model.Description;
-            plan.UpdatedAt = DateTime.Now;
+           var planUpdate = _mapper.Map(model, plan);
 
-            _unitOfWork.GetRepository<Plan>().UpdateAsync(plan);
+            _unitOfWork.GetRepository<Plan>().UpdateAsync(planUpdate);
             var result = await _unitOfWork.SaveChangesAsync(ct);
             return result > 0;
         }
