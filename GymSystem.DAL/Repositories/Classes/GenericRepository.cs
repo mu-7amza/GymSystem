@@ -31,6 +31,13 @@ namespace GymSystem.DAL.Repositories.Classes
             return await _dbSet.AnyAsync(predicate, ct);
         }
 
+        public Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken ct = default)
+        {
+            return predicate == null ?
+                _dbSet.AsNoTracking().CountAsync(ct) :
+                _dbSet.AsNoTracking().CountAsync(predicate,ct);
+        }
+
         public void DeleteAsync(TEntity entity, CancellationToken ct = default)
         {
             _dbSet.Remove(entity);
