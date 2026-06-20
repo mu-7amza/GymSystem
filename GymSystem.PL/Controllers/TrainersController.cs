@@ -35,14 +35,14 @@ namespace GymSystem.PL.Controllers
             }
 
             var result = await _trainerService.CreateTrainerAsync(model, ct);
-            if (result)
+            if (result.success)
             {
                 TempData["Success"] = "Trainer Created Successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["Error"] = "Trainer Creation Failed";
+                TempData["Error"] = result.error;
                 return View(model);
             }
         }
@@ -85,14 +85,14 @@ namespace GymSystem.PL.Controllers
             }
 
             var result = await _trainerService.UpdateTrainerDetailsAsync(id,model, ct);
-            if (result)
+            if (result.success)
             {
                 TempData["Success"] = "Trainer Updated Successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["Error"] = "Trainer Update Failed";
+                TempData["Error"] = result.error;
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -115,14 +115,14 @@ namespace GymSystem.PL.Controllers
         {
          
             var result = await _trainerService.DeleteTrainerAsync(id, ct);
-            if (result)
+            if (result.success)
             {
                 TempData["Success"] = "Trainer Deleted Successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["Error"] = "Trainer Delete Failed";
+                TempData["Error"] = result.error;
                 return RedirectToAction(nameof(Index));
             }
         }

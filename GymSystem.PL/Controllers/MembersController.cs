@@ -39,13 +39,13 @@ namespace GymSystem.PL.Controllers
 
             var result = await _memberService.CreateMemberAsync(model);
 
-            if (result)
+            if (result.success)
             {
                 TempData["Success"] = "Member Created Succcesfully";
             }
             else
             {
-                TempData["Error"] = "Failed to Create Member";
+                TempData["Error"] = result.error;
             }
 
             return RedirectToAction(nameof(Index));
@@ -96,13 +96,13 @@ namespace GymSystem.PL.Controllers
                 return View(model);
            var result = await _memberService.UpdateMemberDetailsAsync(id, model, ct);
 
-            if (result)
+            if (result.success)
             {
                 TempData["Success"] = "Member Updated Successfully";
             }
             else
             {
-                TempData["Error"] = "Failed to update member";
+                TempData["Error"] = result.error;
             }
             return RedirectToAction(nameof(Index));
 
@@ -127,13 +127,13 @@ namespace GymSystem.PL.Controllers
            
             var result = await _memberService.DeleteMemberAsync(id, ct);
 
-            if (result)
+            if (result.success)
             {
                 TempData["Success"] = "Member deleted Successfully";
             }
             else
             {
-                TempData["Error"] = "Failed to delete member";
+                TempData["Error"] = result.error;
             }
             return RedirectToAction(nameof(Index));
 

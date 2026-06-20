@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymSystem.BLL.Common;
 using GymSystem.BLL.Service.Interface;
 using GymSystem.BLL.ViewModels.TrainerViewModels;
 using GymSystem.DAL.Data.Models;
@@ -20,7 +21,7 @@ namespace GymSystem.BLL.Service.Class
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<bool> CreateTrainerAsync(CreateTrainerViewModel model, CancellationToken ct = default)
+        public async Task<Result> CreateTrainerAsync(CreateTrainerViewModel model, CancellationToken ct = default)
         {
             // Check Email Exists
             var emailExist = await _unitOfWork.GetRepository<Trainer>().AnyAsync(x => x.Email == model.Email, ct);
@@ -28,22 +29,22 @@ namespace GymSystem.BLL.Service.Class
             // Check Phone Exists
             var phoneExist = await _unitOfWork.GetRepository<Trainer>().AnyAsync(x => x.Phone == model.Phone, ct);
 
-            if (emailExist || phoneExist) return false;
+            if (emailExist || phoneExist) return Result.ValidationFailed("Email or phone is redundant !");
 
             var trainer = _mapper.Map<Trainer>(model);
 
              _unitOfWork.GetRepository<Trainer>().AddAsync(trainer, ct);
             var result = await _unitOfWork.SaveChangesAsync(ct);
-            return result > 0;
+            return result > 0 ? Result.OK() : Result.Fail("Failed to create trainer") ;
         }
 
-        public async Task<bool> DeleteTrainerAsync(int id , CancellationToken ct = default)
+        public async Task<Result> DeleteTrainerAsync(int id , CancellationToken ct = default)
         {
             var trainer = await _unitOfWork.GetRepository<Trainer>().GetByIdAsync(id, ct);
-            if (trainer == null) return false;
+            if (trainer == null) return Result.NotFound("Trainer not found");
             _unitOfWork.GetRepository<Trainer>().DeleteAsync(trainer, ct);
             var result = await _unitOfWork.SaveChangesAsync(ct);
-            return result > 0;
+            return result > 0 ? Result.OK() : Result.Fail("Failed to delete trainer") ;
         }
 
         public async Task<IEnumerable<TrainerViewModel>> GetAllTrainersAsync(bool tracking, CancellationToken ct = default)
@@ -69,11 +70,11 @@ namespace GymSystem.BLL.Service.Class
             return trainerToUpdate;
         }
 
-        public async Task<bool> UpdateTrainerDetailsAsync(int id, TrainerToUpdateViewModel model, CancellationToken ct)
+        public async Task<Result> UpdateTrainerDetailsAsync(int id, TrainerToUpdateViewModel model, CancellationToken ct)
         {
             var trainer = await _unitOfWork.GetRepository<Trainer>().GetByIdAsync(id, ct);
 
-            if (trainer == null) return false;
+            if (trainer == null) return Result.NotFound("Trainer not found");
 
             // Check Email Exists
             var emailExist = await  _unitOfWork.GetRepository<Trainer>().AnyAsync(x => x.Email == model.Email && x.Id != id, ct);
@@ -81,13 +82,13 @@ namespace GymSystem.BLL.Service.Class
             // Check Phone Exists
             var phoneExist = await _unitOfWork.GetRepository<Trainer>().AnyAsync(x => x.Phone == model.Phone && x.Id != id, ct);
 
-            if (emailExist || phoneExist) return false;
+            if (emailExist || phoneExist) return Result.ValidationFailed("Email or phone is redundant !");
 
             var trainerUpdate =  _mapper.Map(model, trainer);
 
             _unitOfWork.GetRepository<Trainer>().UpdateAsync(trainerUpdate, ct);
             var result = await _unitOfWork.SaveChangesAsync(ct);
-            return result > 0;
+            return result > 0 ? Result.OK() : Result.Fail("Failed to update trainer") ;
         }
     }
 }

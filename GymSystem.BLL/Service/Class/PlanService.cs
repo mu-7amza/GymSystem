@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymSystem.BLL.Common;
 using GymSystem.BLL.Service.Interface;
 using GymSystem.BLL.ViewModels.PlanViewModel;
 using GymSystem.DAL.Data.Models;
@@ -46,21 +47,21 @@ namespace GymSystem.BLL.Service.Class
             return _mapper.Map<PlanToUpdateViewModel>(plan);
         }
 
-        public async Task<bool> UpdatePlanDetailsAsync(int id, PlanToUpdateViewModel model, CancellationToken ct = default)
+        public async Task<Result> UpdatePlanDetailsAsync(int id, PlanToUpdateViewModel model, CancellationToken ct = default)
         {
             var plan = await  _unitOfWork.GetRepository<Plan>().GetByIdAsync(id, ct);
 
-            if(plan == null) return false;
+            if(plan == null) return Result.NotFound("Plan not found");
 
             var planMemberShip = await _unitOfWork.GetRepository<MemberShip>().FirstOrDefaultAsync(x => x.PlanId == id);
 
-            if(planMemberShip is not null) return false;
+            if(planMemberShip is not null) return Result.Fail("Plan has members enrolled");
 
            var planUpdate = _mapper.Map(model, plan);
 
             _unitOfWork.GetRepository<Plan>().UpdateAsync(planUpdate);
             var result = await _unitOfWork.SaveChangesAsync(ct);
-            return result > 0;
+            return result > 0 ? Result.OK() : Result.Fail("Failed to update plan");
         }
     }
 }

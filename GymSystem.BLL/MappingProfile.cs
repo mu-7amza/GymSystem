@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GymSystem.BLL.ViewModels.MemberViewModel;
 using GymSystem.BLL.ViewModels.PlanViewModel;
+using GymSystem.BLL.ViewModels.SessionsViewModel;
 using GymSystem.BLL.ViewModels.TrainerViewModels;
 using GymSystem.DAL.Data.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -19,6 +20,7 @@ namespace GymSystem.BLL
             TrainerMap();
             MemberMap();
             PlansMap();
+            SessionMap();
         }
 
         private void TrainerMap()
@@ -98,6 +100,37 @@ namespace GymSystem.BLL
             CreateMap<Plan, PlanToUpdateViewModel>();
             CreateMap<PlanToUpdateViewModel, Plan>()
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.Now));
+
+        }
+        private void SessionMap()
+        {
+            CreateMap<Session, SessionViewModel>()
+                .ForMember(dest => dest.TrainerName,opt => opt.MapFrom(src => src.Trainer.Name))
+                .ForMember(dest => dest.CategoryName , opt => opt.MapFrom(src => src.Category.CategoryName)).ReverseMap();
+            CreateMap<Session, CreateSessionViewModel>().ReverseMap();
+            CreateMap<Trainer, TrainerSelectViewModel>();
+            CreateMap<Category, CategorySelectViewModel>();
+            CreateMap<Session, SessionDetailsViewModel>()
+                 .ForMember(dest => dest.TrainerName, opt => opt.MapFrom(src => src.Trainer.Name))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName)).ReverseMap();
+            CreateMap<Session, SessionToUpdateViewModel>()
+                   .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                   .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                   .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))
+                   .ForMember(dest => dest.TrainerId, opt => opt.MapFrom(src => src.TrainerId));
+
+            CreateMap<SessionToUpdateViewModel, Session>()
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))
+                .ForMember(dest => dest.TrainerId, opt => opt.MapFrom(src => src.TrainerId))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.Capacity, opt => opt.UseDestinationValue())
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Trainer, opt => opt.Ignore())
+                .ForMember(dest => dest.Category, opt => opt.Ignore())
+                .ForMember(dest => dest.CategoryId, opt => opt.Ignore());
 
         }
 

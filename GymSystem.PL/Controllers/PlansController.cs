@@ -58,14 +58,14 @@ namespace GymManagementSystem.Controllers
 
             var result = await _planService.UpdatePlanDetailsAsync(id, model, ct);
 
-            if (result)
+            if (result.success)
             {
                 TempData["Success"] = "Plan Updated Successfully";
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["Error"] = "Failed To Update Plan";
+                TempData["Error"] = result.error;
                 return RedirectToAction(nameof(Index));
             }
 
