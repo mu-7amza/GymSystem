@@ -1,9 +1,11 @@
 using GymSystem.BLL;
 using GymSystem.BLL.Service.Class;
 using GymSystem.BLL.Service.Interface;
+using GymSystem.DAL.Data.DataSeeding;
 using GymSystem.DAL.Data.DbContexts;
 using GymSystem.DAL.Repositories.Classes;
 using GymSystem.DAL.Repositories.Interfaces;
+using GymSystem.PL;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +31,10 @@ builder.Services.AddScoped<ISessionService, SessionService>();
 // Register AutoMapper
 builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
 
-var app = builder.Build(); 
+var app = builder.Build();
+
+// Seed Data
+await app.MigrateAndSeedAsync();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
