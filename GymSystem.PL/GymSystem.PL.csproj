@@ -17,5 +17,13 @@
   <ItemGroup>
     <ProjectReference Include="..\GymSystem.BLL\GymSystem.BLL.csproj" />
   </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MemberPictures\" />
+    <Folder Include="wwwroot\MemberPictures\" />
+  </ItemGroup>
 
 </Project>

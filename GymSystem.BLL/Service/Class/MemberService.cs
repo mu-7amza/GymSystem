@@ -17,12 +17,14 @@ namespace GymSystem.BLL.Service.Class
     public class MemberService : IMemberService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAttachmentService _attachmentService;
         private readonly IMapper _mapper;
 
-        public MemberService(IUnitOfWork unitOfWork, IMapper mapper)
+        public MemberService(IUnitOfWork unitOfWork, IMapper mapper, IAttachmentService attachmentService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _attachmentService = attachmentService;
         }
 
         public async Task<Result> CreateMemberAsync(CreateMemberViewModel model, CancellationToken ct = default)
@@ -36,6 +38,14 @@ namespace GymSystem.BLL.Service.Class
             if (emailExist || phoneExist) return Result.ValidationFailed("Email or phone is redundant !");
 
             var member = _mapper.Map<Member>(model);
+
+            var newPhotoName = await _attachmentService.UploadAsync(model.PhotoFile,
+                model.PhotoFile.FileName, "MemberPictures", ct);
+
+            if (string.IsNullOrEmpty(newPhotoName))
+                return Result.NotFound("Photo not found");
+            member.Photo = newPhotoName;
+
             _unitOfWork.GetRepository<Member>().AddAsync(member, ct);
             var result = await _unitOfWork.SaveChangesAsync(ct);
             return result > 0 ? Result.OK() : Result.Fail("Failed to create Member");
@@ -49,7 +59,12 @@ namespace GymSystem.BLL.Service.Class
             var hasFuturebooking = await _unitOfWork.GetRepository<Booking>().AnyAsync(x => x.MemberId == member.Id && x.Session.StartDate > DateTime.Now,ct);
             if (hasFuturebooking) return Result.Fail("Can't delete member , has future booking");
 
-             _unitOfWork.GetRepository<Member>().DeleteAsync(member, ct);
+            if(member.Photo != null)
+            {
+                _attachmentService.Delete(member.Photo, "MemberPictures");
+            }
+
+            _unitOfWork.GetRepository<Member>().DeleteAsync(member, ct);
             var result = await _unitOfWork.SaveChangesAsync(ct);
             return result > 0 ? Result.OK() : Result.Fail("Failed to delete member");
 
@@ -63,6 +78,19 @@ namespace GymSystem.BLL.Service.Class
             if (!members.Any()) return Enumerable.Empty<MemberViewModel>();
 
             List<MemberViewModel> memberViewModels = _mapper.Map<IEnumerable<MemberViewModel>>(members).ToList();
+
+            foreach (var member in memberViewModels)
+            {
+                if (!string.IsNullOrEmpty(member.Photo))
+                {
+                    var photoPath = _attachmentService.GetPhoto(member.Photo, "MemberPictures", ct);
+                    member.PhotoPath = $"{photoPath}" ?? "/images/default-avatar.png"; 
+                }
+                else
+                {
+                    member.PhotoPath = "/images/default-avatar.png"; 
+                }
+            }
 
             return memberViewModels;
         }

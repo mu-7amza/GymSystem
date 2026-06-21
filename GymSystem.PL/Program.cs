@@ -26,6 +26,8 @@ builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+
 
 
 
@@ -46,6 +48,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
