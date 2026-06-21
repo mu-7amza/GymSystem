@@ -36,7 +36,7 @@ namespace GymSystem.DAL.Data.Configurations
             builder.OwnsOne(x => x.Address, address =>
             {
                 address.Property(x => x.City).HasColumnType("Varchar").HasMaxLength(30);
-                address.Property(x => x.Streat).HasColumnType("Varchar").HasMaxLength(30);
+                address.Property(x => x.Street).HasColumnType("Varchar").HasMaxLength(30);
             });
 
         }

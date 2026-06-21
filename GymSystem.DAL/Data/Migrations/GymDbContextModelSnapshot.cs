@@ -17,7 +17,7 @@ namespace GymSystem.DAL.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.16")
+                .HasAnnotation("ProductVersion", "9.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -423,7 +423,7 @@ namespace GymSystem.DAL.Data.Migrations
                                 .HasMaxLength(30)
                                 .HasColumnType("Varchar");
 
-                            b1.Property<string>("Streat")
+                            b1.Property<string>("Street")
                                 .IsRequired()
                                 .HasMaxLength(30)
                                 .HasColumnType("Varchar");
@@ -493,7 +493,7 @@ namespace GymSystem.DAL.Data.Migrations
                                 .HasMaxLength(30)
                                 .HasColumnType("Varchar");
 
-                            b1.Property<string>("Streat")
+                            b1.Property<string>("Street")
                                 .IsRequired()
                                 .HasMaxLength(30)
                                 .HasColumnType("Varchar");

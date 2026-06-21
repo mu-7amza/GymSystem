@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymSystem.DAL.Data.Models.Enums
 {
-    public enum Specilaities
+    public enum Specialities
     {
         GeneralFitness = 1,
         Yoga ,

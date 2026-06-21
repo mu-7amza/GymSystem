@@ -1,8 +1,11 @@
+using GymSystem.BLL;
 using GymSystem.BLL.Service.Class;
 using GymSystem.BLL.Service.Interface;
+using GymSystem.DAL.Data.DataSeeding;
 using GymSystem.DAL.Data.DbContexts;
 using GymSystem.DAL.Repositories.Classes;
 using GymSystem.DAL.Repositories.Interfaces;
+using GymSystem.PL;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,8 +20,24 @@ option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection
 // Register Repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IPlanService, PlanService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ITrainerService, TrainerService>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 
-var app = builder.Build(); 
+
+
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
+
+var app = builder.Build();
+
+// Seed Data
+await app.MigrateAndSeedAsync();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -29,6 +48,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
