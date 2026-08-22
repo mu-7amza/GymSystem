@@ -16,6 +16,7 @@ namespace GymSystem.PL.Controllers
 
         public async Task <IActionResult> Index(CancellationToken ct)
         {
+            ViewBag.ActivePage = "Trainers";
             var trainers = await _trainerService.GetAllTrainersAsync(tracking:false,ct:ct);
             return View(trainers);
         }

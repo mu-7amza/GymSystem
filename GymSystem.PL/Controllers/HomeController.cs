@@ -18,6 +18,7 @@ namespace GymManagementSystem.Controllers
 
         public async Task<IActionResult> Index(CancellationToken ct )
         {
+            ViewBag.ActivePage = "Home";
             var data = await _analyticsService.GetAnalyticsDataAync(ct);
             return View(data);
         }

@@ -19,6 +19,7 @@ namespace GymManagementSystem.Controllers
         // GET: AllPlans
         public async Task<IActionResult> Index(CancellationToken ct)
         {
+            ViewBag.ActivePage = "Plans";
             var plans = await _planService.GetAllPlansAsync(false,ct);
             return View(plans);
         }

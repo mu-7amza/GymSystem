@@ -21,6 +21,7 @@ namespace GymSystem.PL.Controllers
         // Index => List of Members
         public async Task<IActionResult> Index()
         {
+            ViewBag.ActivePage = "Members";
             var members = await _memberService.GetAllMemberAsync(tracking: false);
             return View(members);
         }

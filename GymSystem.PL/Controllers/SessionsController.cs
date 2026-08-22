@@ -19,6 +19,7 @@ namespace GymSystem.PL.Controllers
         // GetAll Sessions  BaseUrl/Sessions
         public async Task<IActionResult> Index(CancellationToken ct)
         {
+            ViewBag.ActivePage = "Sessions";
             var sessions = await _sessionService.GetAllSessionsAsync(ct);
             return View(sessions);
         }

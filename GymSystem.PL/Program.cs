@@ -3,9 +3,11 @@ using GymSystem.BLL.Service.Class;
 using GymSystem.BLL.Service.Interface;
 using GymSystem.DAL.Data.DataSeeding;
 using GymSystem.DAL.Data.DbContexts;
+using GymSystem.DAL.Data.Models;
 using GymSystem.DAL.Repositories.Classes;
 using GymSystem.DAL.Repositories.Interfaces;
 using GymSystem.PL;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +29,20 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<IAttachmentService, AttachmentService>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
+{
+    // Password Rules
+    opt.Password.RequireDigit = true;
+    opt.Password.RequireLowercase = false;
+    opt.Password.RequireUppercase = false;
+    opt.Password.RequireNonAlphanumeric = false;
+    opt.Password.RequiredLength = 6;
 
+    // Louckout Rules
+    opt.Lockout.MaxFailedAccessAttempts = 5;
+    opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+
+}).AddEntityFrameworkStores<GymDbContext>().AddDefaultTokenProviders();
 
 
 
