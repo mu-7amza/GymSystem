@@ -2,12 +2,14 @@
 using GymSystem.BLL.ViewModels.PlanViewModel;
 using GymSystem.DAL.Data.Models;
 using GymSystem.DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 
 namespace GymManagementSystem.Controllers
 {
+    [Authorize]
     public class PlansController : Controller
     {
         private readonly IPlanService _planService ;
